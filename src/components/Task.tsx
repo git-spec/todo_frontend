@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
@@ -20,18 +20,27 @@ import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import { useTheme } from "@mui/material/styles";
 
 import './Task.css';
+import type {ITask, ITaskProp} from "./ITask.ts";
 
 
-function Task() {
+function Task({taskProp}: ITaskProp) {
     const theme = useTheme();
+    const [task, setTask] = useState<ITask>();
     const [status, setStatus] = useState<string>('TODO');
     const [title, setTitle] = useState<string>('Aufgabentyp');
-    const [task, setTask] = useState<string>('Lorem ipsum dolor sit amet');
+    const [content, setContent] = useState<string>();
     const [edit, setEdit] = useState<boolean>(false);
+
+    useEffect(() => {
+        setTask(taskProp);
+        setContent(taskProp.description);
+        setStatus(taskProp.status);
+        setTitle(taskProp.id)
+    }, []);
 
     return (
         <>
-            <Card sx={{display: 'flex', flexFlow: 'column', pt: 1}}>
+            <Card sx={{display: 'flex', flexFlow: 'column', pt: 1, m: 2}}>
                     {/*HEADER*/}
                     <CardHeader subheader={
                         <Grid container spacing={1}>
@@ -94,8 +103,8 @@ function Task() {
                                         }
                                     }
                                     placeholder={'TODO'}
-                                    value={task}
-                                    onChange={e => setTask(e.target.value)}
+                                    value={content}
+                                    onChange={e => setContent(e.target.value)}
                                     disabled={!edit}
                                 />
                             </CardContent>
