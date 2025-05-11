@@ -1,0 +1,13 @@
+.task:disabled {
+    border: none !important;
+    resize: none !important;
+}
+
+.hide {
+    display: none !important;
+}
+
+.MuiFormGroup-root .MuiFormControlLabel-root .MuiButtonBase-root .MuiRadio-root {
+    padding-top: 0;
+    padding-bottom: 0;
+}
