@@ -34,13 +34,13 @@ function App() {
 
     useEffect(() => {
         getTasks();
-    }, []);
+    }, [tasks]);
 
   return (
     <>
       <Container maxWidth={'xl'}>
           {
-              tasks && tasks.map(task => (<Task taskProp={task} />))
+              tasks && tasks.map(task => (<Task task={task} onTaskChange={getTasks} />))
           }
       </Container>
     </>

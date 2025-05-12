@@ -18,12 +18,17 @@ import Radio from "@mui/material/Radio";
 import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import { useTheme } from "@mui/material/styles";
+import axios from "axios";
 
 import './Task.css';
-import type {ITask, ITaskProp} from "./ITask.ts";
+import type {ITask} from "./ITask.ts";
 
+type Props = {
+    task: ITask;
+    onTaskChange: () => void;
+}
 
-function Task({taskProp}: ITaskProp) {
+function Task(props: Props) {
     const theme = useTheme();
     const [task, setTask] = useState<ITask>();
     const [status, setStatus] = useState<string>('TODO');
@@ -32,11 +37,17 @@ function Task({taskProp}: ITaskProp) {
     const [edit, setEdit] = useState<boolean>(false);
 
     useEffect(() => {
-        setTask(taskProp);
-        setContent(taskProp.description);
-        setStatus(taskProp.status);
-        setTitle(taskProp.id)
+        setTask(props.task);
+        setContent(props.task.description);
+        setStatus(props.task.status);
+        setTitle(props.task.id)
     }, []);
+
+    function deleteTask() {
+        if(task) axios.delete('/api/todo/' + task.id)
+            .then(() => props.onTaskChange)
+            .catch(err => console.log(err));
+    }
 
     return (
         <>
@@ -250,7 +261,8 @@ function Task({taskProp}: ITaskProp) {
                                 </Button>
                                 <DeleteOutlineOutlinedIcon
                                     color={'primary'}
-                                    sx={{ml: '1rem !important'}}
+                                    sx={{ml: '1rem !important', cursor: 'pointer'}}
+                                    onClick={() => deleteTask()}
                                 ></DeleteOutlineOutlinedIcon>
                             </CardActions>
                             {/*EDIT ACTIONS*/}

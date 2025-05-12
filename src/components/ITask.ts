@@ -3,7 +3,3 @@ export interface ITask {
     description: string;
     status: string;
 }
-
-export interface ITaskProp {
-    taskProp: ITask;
-}
