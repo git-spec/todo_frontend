@@ -218,9 +218,10 @@ function Task({taskProp}: ITaskProp) {
                                         display: 'flex',
                                         alignItems: 'start',
                                         justifyContent: 'end',
-                                        p: 2,
                                         pt: '6px',
-                                        pr: '10px'
+                                        pr: '10px',
+                                        pb: 1,
+                                        pl: 2
                                     }
                                 }
                             >
@@ -255,7 +256,7 @@ function Task({taskProp}: ITaskProp) {
                             {/*EDIT ACTIONS*/}
                             { edit &&
                                 (
-                                    <CardActions sx={{pb: 2}}>
+                                    <CardActions sx={{py: 1}}>
                                         <Button sx={{minWidth: 0, p: 0}}>
                                             <SaveOutlinedIcon></SaveOutlinedIcon>
                                         </Button>
