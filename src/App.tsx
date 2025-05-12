@@ -4,6 +4,7 @@ import axios from "axios";
 
 import './App.css';
 import Task from "./components/Task.tsx";
+import TaskBar from "./components/TaskBar.tsx";
 import type {ITask} from "./components/ITask.ts";
 
 
@@ -38,7 +39,8 @@ function App() {
 
   return (
     <>
-      <Container maxWidth={'xl'}>
+      <TaskBar />
+      <Container maxWidth={'xl'} sx={{pt: '3rem'}}>
           {
               tasks && tasks.map(task => (<Task task={task} onTaskChange={getTasks} />))
           }
