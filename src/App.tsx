@@ -28,17 +28,13 @@ function App() {
 
     function getTasks() {
         axios.get('/api/todo')
-            .then(res => {
-                setTasks(res.data);
-                console.log('response: ', res.data)
-            })
+            .then(res => setTasks(res.data))
             .catch(err => console.log(err))
     }
 
-    // useEffect(() => {
-    //     getTasks();
-    //     console.log(tasks);
-    // }, []);
+    useEffect(() => {
+        getTasks();
+    }, []);
 
   return (
     <>
