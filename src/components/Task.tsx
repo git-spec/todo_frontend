@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {type FormEvent, useEffect, useState} from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
@@ -24,34 +24,54 @@ import './Task.css';
 import type {ITask} from "./ITask.ts";
 
 type Props = {
-    task: ITask;
-    onTaskChange: () => void;
+    task?: ITask;
+    onTaskChange?: () => void;
+    edit?: boolean;
+    getNewTask?: (val: ITask) => void;
 }
 
 function Task(props: Props) {
     const theme = useTheme();
     const [task, setTask] = useState<ITask>();
     const [status, setStatus] = useState<string>('TODO');
-    const [title, setTitle] = useState<string>('Aufgabentyp');
+    const [title, setTitle] = useState<string>();
     const [content, setContent] = useState<string>();
     const [edit, setEdit] = useState<boolean>(false);
 
     useEffect(() => {
         setTask(props.task);
-        setContent(props.task.description);
-        setStatus(props.task.status);
-        setTitle(props.task.id)
+        if(props.task) setContent(props.task.description);
+        if(props.task) setStatus(props.task.status);
+        if(props.task) setTitle(props.task.id);
+        if(props.edit) setEdit(props.edit);
     }, []);
 
+    function addTask(e: FormEvent) {
+        e.preventDefault();
+        axios.post('/api/todo',
+            {
+                description: content ? content : '',
+                status: 'OPEN'
+            }
+        )
+            .then(res => res.data && props.getNewTask && props.getNewTask(res.data))
+            .catch(err => console.log(err.status));
+    }
+
     function deleteTask() {
-        if(task) axios.delete('/api/todo/' + task.id)
-            .then(() => props.onTaskChange)
-            .catch(err => console.log(err));
+        if(task) {
+            axios.delete('/api/todo/' + task.id)
+                .then(() => props.onTaskChange && props.onTaskChange())
+                .catch(err => console.log(err));
+        } else {
+            if (props.onTaskChange) props.onTaskChange();
+        }
     }
 
     return (
         <>
-            <Card sx={{display: 'flex', flexFlow: 'column', pt: 1, m: 2}}>
+            <form onSubmit={e => addTask(e)}>
+                <Card sx={{display: 'flex', flexFlow: 'column', pt: 1, m: 2}}>
                     {/*HEADER*/}
                     <CardHeader subheader={
                         <Grid container spacing={1}>
@@ -113,7 +133,7 @@ function Task(props: Props) {
                                             paddingLeft: '.8rem'
                                         }
                                     }
-                                    placeholder={'TODO'}
+                                    placeholder={'To do'}
                                     value={content}
                                     onChange={e => setContent(e.target.value)}
                                     disabled={!edit}
@@ -269,7 +289,7 @@ function Task(props: Props) {
                             { edit &&
                                 (
                                     <CardActions sx={{py: 1}}>
-                                        <Button sx={{minWidth: 0, p: 0}}>
+                                        <Button type={'submit'} sx={{minWidth: 0, p: 0}}>
                                             <SaveOutlinedIcon></SaveOutlinedIcon>
                                         </Button>
                                         <Button
@@ -283,7 +303,8 @@ function Task(props: Props) {
                             }
                         </Grid>
                     </Grid>
-            </Card>
+                </Card>
+            </form>
         </>
     );
 }

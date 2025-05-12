@@ -7,8 +7,11 @@ import Grid from "@mui/material/Grid";
 import MoreIcon from '@mui/icons-material/MoreVert';
 import AddIcon from '@mui/icons-material/Add';
 
+type Props = {
+    onAddTask: () => void;
+};
 
-function TaskBar() {
+function TaskBar(props: Props) {
     return (
         <>
           <AppBar sx={{px: 1}}>
@@ -21,6 +24,7 @@ function TaskBar() {
                               aria-label="display more actions"
                               edge="end"
                               color="inherit"
+                              onClick={props.onAddTask}
                           >
                               <AddIcon />
                           </IconButton>
