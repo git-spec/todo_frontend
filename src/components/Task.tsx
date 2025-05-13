@@ -27,7 +27,7 @@ type Props = {
     task?: ITask;
     onTaskChange?: () => void;
     edit?: boolean;
-    getNewTask?: (val: ITask) => void;
+    getNewTask: (val: ITask) => void;
 }
 
 function Task(props: Props) {
@@ -51,10 +51,28 @@ function Task(props: Props) {
         axios.post('/api/todo',
             {
                 description: content ? content : '',
-                status: 'OPEN'
+                status: 'TODO'
             }
         )
             .then(res => res.data && props.getNewTask && props.getNewTask(res.data))
+            .catch(err => console.log(err.status));
+    }
+
+    function updateTask(e: FormEvent) {
+        e.preventDefault();
+        if (task) axios.put('api/todo/' + task.id,
+            {
+                id: task.id,
+                description: content,
+                status: status
+            }
+        )
+            .then(res => {
+                if (res.data) {
+                    if (props.getNewTask) props.getNewTask(res.data);
+                    setEdit(false);
+                }
+            })
             .catch(err => console.log(err.status));
     }
 
@@ -70,7 +88,7 @@ function Task(props: Props) {
 
     return (
         <>
-            <form onSubmit={e => addTask(e)}>
+            <form onSubmit={e => task && task.id ? updateTask(e) : addTask(e)}>
                 <Card sx={{display: 'flex', flexFlow: 'column', pt: 1, m: 2}}>
                     {/*HEADER*/}
                     <CardHeader subheader={

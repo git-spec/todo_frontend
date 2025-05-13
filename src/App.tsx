@@ -12,9 +12,24 @@ function App() {
     const [tasks, setTasks] = useState<Array<ITask>>();
     const [newTask, setNewTask] = useState<boolean>(false);
     const getNewTask = useCallback((val: ITask) => {
-        const newTasks = tasks ? [val, ...tasks] : [val];
-        setTasks(newTasks);
-        clearNewTask();
+        if (tasks && !!tasks.find(el => el.id === val.id)) {
+            const updatedTasks = tasks.map(task => {
+                if (task.id === val.id) {
+                    return {
+                        id: val.id,
+                        description: val.description,
+                        status: val.status
+                    }
+                } else {
+                    return task;
+                }
+            });
+            setTasks(updatedTasks);
+        } else {
+            const newTasks = tasks ? [val, ...tasks] : [val];
+            setTasks(newTasks);
+            clearNewTask();
+        }
     }, [tasks]);
 
     function addNewTask() {
@@ -43,7 +58,7 @@ function App() {
               newTask && <Task edit={newTask} onTaskChange={clearNewTask} getNewTask={getNewTask} />
           }
           {
-              tasks && tasks.map(task => (<Task key={task.id} task={task} onTaskChange={getTasks} />))
+              tasks && tasks.map(task => (<Task key={task.id} task={task} onTaskChange={getTasks} getNewTask={getNewTask} />))
           }
       </Container>
     </>
